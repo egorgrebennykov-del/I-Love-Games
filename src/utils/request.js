@@ -1,15 +1,10 @@
 const apiKey = "sb_publishable_tBbp2YcHXaaEzqY072-9Ng_q7ay_OVp";
 const url = "https://tdyhrjbjvmtyyxgysxss.supabase.co/rest/v1/";
 
-export default async function request(
-  path = "/",
-  url,
-  method = "GET",
-  data = null,
-) {
+export default async function request(path = "/", method = "GET", data = null) {
   const options = {
     headers: {
-      apiKey: apiKey,
+      apikey: apiKey,
     },
   };
 
@@ -18,9 +13,17 @@ export default async function request(
   }
 
   if (data) {
-    options.body = JSON.parse(data);
-    options.headers["Content-Type"] = "aplication/json";
+    options.body = JSON.stringify(data);
+    options.headers["Content-Type"] = "application/json";
   }
 
-  const response = await fetch(`${url}${path}`);
+  const response = await fetch(`${url}${path}`, options);
+
+  if (!response.ok) {
+    throw new Error(
+      `Request failed: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  return response.json();
 }
